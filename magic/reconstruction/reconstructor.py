@@ -5,7 +5,7 @@ import pptk
 # import pcl
 from tqdm import tqdm
 # from reconstruction.icp import icp
-import magic.reconstruction.calibrations as calib
+import GeneralizingKinematics.magic.reconstruction.calibrations as calib
 
 class Reconstructor(object):
     """ Make pointcloud from one/many depth image(s).

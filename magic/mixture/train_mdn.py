@@ -4,11 +4,11 @@ import torch
 import numpy as np
 from torchvision import transforms
 
-from magic.noise_models import DropPixels, Noise
-from magic.mixture.mixture_density_trainer import MDNTrainer
-from magic.mixture.dataset import MixtureDataset
-from magic.mixture.models import KinematicMDN, KinematicMDNv2, KinematicMDNv3
-from magic.mixture.mixture_errors import mixture_error_table
+from GeneralizingKinematics.magic.noise_models import DropPixels, Noise
+from GeneralizingKinematics.magic.mixture.mixture_density_trainer import MDNTrainer
+from GeneralizingKinematics.magic.mixture.dataset import MixtureDataset
+from GeneralizingKinematics.magic.mixture.models import KinematicMDN, KinematicMDNv2, KinematicMDNv3
+from GeneralizingKinematics.magic.mixture.mixture_errors import mixture_error_table
 
 parser = argparse.ArgumentParser(description="Train object learner on articulated object dataset.")
 parser.add_argument('--name', type=str, help='jobname', default='test')

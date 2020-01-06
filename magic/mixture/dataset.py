@@ -3,7 +3,7 @@ import os
 import numpy as np
 import pandas as pd
 import torch
-from magic.noise_models import Distractor
+from GeneralizingKinematics.magic.noise_models import Distractor
 from torch.utils.data import Dataset
 
 

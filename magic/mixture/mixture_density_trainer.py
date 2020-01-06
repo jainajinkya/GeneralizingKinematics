@@ -10,8 +10,8 @@ import matplotlib
 matplotlib.use('Agg')
 from matplotlib import pyplot as plt
 
-import magic.mixture.mdn as mdn
-from magic.mixture.utils import *
+import GeneralizingKinematics.magic.mixture.mdn as mdn
+from GeneralizingKinematics.magic.mixture.utils import *
 
 
 class MDNTrainer(object):

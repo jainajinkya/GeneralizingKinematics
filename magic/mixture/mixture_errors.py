@@ -6,10 +6,10 @@ import pandas as pd
 from tqdm import tqdm
 from matplotlib import pyplot as plt
 
-import magic.mixture.mdn as mdn
-from magic.mixture.utils import *
-from magic.reconstruction import calibrations as calibrations
-from magic.reconstruction.reconstructor import Reconstructor
+import GeneralizingKinematics.magic.mixture.mdn as mdn
+from GeneralizingKinematics.magic.mixture.utils import *
+from GeneralizingKinematics.magic.reconstruction import calibrations as calibrations
+from GeneralizingKinematics.magic.reconstruction.reconstructor import Reconstructor
 
 
 def pointcloud_error_metric(depth, trainloader, labels, pi, sigma, mu, obj, ndof, real=False):
