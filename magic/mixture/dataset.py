@@ -79,7 +79,8 @@ class MixtureDataset(Dataset):
         self.distractor = Distractor(trans_weight=0.0,
                                      rotate=False)
 
-        print(self.keep_columns)
+        print("keep_columns: ", self.keep_columns)
+        print("one_columns: ", self.one_columns)
 
     def __len__(self):
         return self.length

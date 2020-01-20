@@ -5,3 +5,4 @@ magic/reconstruction/__pycache__/
 models/
 plots/
 *.npy
+__pycache__/
