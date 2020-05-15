@@ -47,8 +47,6 @@ class KinematicMDNv3(nn.Module):
             nn.Dropout(p=p),
             mdn.MDN(in_features, n_hidden, out_features, num_gaussians)
         )
-        if use_cuda:
-            self.model.cuda()
 
     def forward(self, x):
         pi, sigma, mu = self.model(x)
