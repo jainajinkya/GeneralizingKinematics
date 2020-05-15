@@ -280,6 +280,7 @@ def mixture_error_table(name, model, dataloader, device, n_gaussians, obj, ndof,
 
     print('computing %s /euclid/ histograms.' % name)
 
+    model.float().to(device)
     # make plot directory
     if not os.path.exists("plots/" + name + "/euclid_hist"):
         os.makedirs("plots/" + name + "/euclid_hist")
@@ -362,8 +363,26 @@ def mixture_error_table(name, model, dataloader, device, n_gaussians, obj, ndof,
                 radius_errors[i * dataloader.batch_size:i * dataloader.batch_size + len(euc_i)] = rad_i
                 config_errors[i * dataloader.batch_size:i * dataloader.batch_size + len(euc_i)] = conf_i
 
-    # plt.hist(euclids, bins=32); plt.show()
+    fig = plt.figure(1)
+    plt.hist(euclids, bins=32)
+    fname = 'plots/%s/euclid_hist/axis_position_errors.png' % name
+    plt.savefig(fname)
 
+    fig = plt.figure(2)
+    plt.hist(axis_rot_errors, bins=32)
+    fname = 'plots/%s/euclid_hist/axis_rot_errors.png' % name
+    plt.savefig(fname)
+    
+    fig = plt.figure(3)
+    plt.hist(radius_errors, bins=32)
+    fname = 'plots/%s/euclid_hist/radius_errors.png' % name
+    plt.savefig(fname)
+
+    fig = plt.figure(4)
+    plt.hist(config_errors, bins=32)
+    fname = 'plots/%s/euclid_hist/config_errors.png' % name
+    plt.savefig(fname)
+    
     # make std deviation table
     table = torch.tensor([euclids.mean(), euclids.std(),
                           axis_rot_errors.mean(), axis_rot_errors.std(),

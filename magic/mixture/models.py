@@ -1,6 +1,6 @@
 import torch.nn as nn
 from torchvision import models
-import magic.mixture.mdn as mdn
+import GeneralizingKinematics.magic.mixture.mdn as mdn
 
 
 # %%
