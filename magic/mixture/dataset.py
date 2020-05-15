@@ -1,7 +1,7 @@
 import os
 
+import h5py
 import numpy as np
-import pandas as pd
 import torch
 from GeneralizingKinematics.magic.noise_models import Distractor
 from torch.utils.data import Dataset
@@ -26,8 +26,10 @@ class MixtureDataset(Dataset):
             shapes and kinematics and stuff
         '''
         self.root_dir = root_dir
-        self.labels_frame = pd.read_csv(os.path.join(root_dir, 'params.csv'), header=None)
-        self.raw_labels = self.labels_frame.values
+        # self.labels_frame = pd.read_csv(os.path.join(root_dir, 'params.csv'), header=None)
+        # self.raw_labels = self.labels_frame.values
+        self.labels_frame = None
+        self.raw_labels = self.get_raw_labels()
         self.length = ntrain
         self.n_dof = n_dof
         self.transform = transform
@@ -168,3 +170,16 @@ class MixtureDataset(Dataset):
                 pass
             else:
                 self.normalize_dim(self.raw_labels, self.bounds, d)
+
+    def get_raw_labels(self):
+        if self.labels_frame is None:
+            self.labels_frame = h5py.File(os.path.join(self.root_dir, 'complete_data.hdf5'), 'r')
+
+        raw_labels = []
+        for obj in self.labels_frame.values():
+            embeds = np.array(obj['embedding_and_params'])
+            q_vals = np.array(obj['q'])
+            for q in q_vals:
+                row = np.concatenate((embeds, q))
+                raw_labels.append(row)
+        return np.array(raw_labels)
