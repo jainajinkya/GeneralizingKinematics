@@ -92,11 +92,11 @@ class MixtureDataset(Dataset):
         # load depth
         # path = os.path.join(self.root_dir, 'depth' + str(idx).zfill(6) + '.pt')
         # depth = torch.load(path)
-        if self.labels_data is None:
-            self.labels_data = h5py.File(os.path.join(self.root_dir, 'complete_data.hdf5'), 'r')
+        if self.labels_frame is None:
+            self.labels_frame = h5py.File(os.path.join(self.root_dir, 'complete_data.hdf5'), 'r')
 
         obj_idx, obj_data_idx = self.idx_to_h5py_dataset_idx(idx)
-        depth = torch.from_numpy(self.labels_data['obj_' + str(obj_idx).zfill(6)]['depth_imgs'][obj_data_idx])
+        depth = torch.from_numpy(self.labels_frame['obj_' + str(obj_idx).zfill(6)]['depth_imgs'][obj_data_idx])
 
         # random other depth image
         if np.random.rand() < self.distractor_prob:
@@ -105,7 +105,7 @@ class MixtureDataset(Dataset):
             # depth2 = torch.load(path2)
             other_obj_idx, other_data_idx = self.idx_to_h5py_dataset_idx(other_idx)
             depth2 = torch.from_numpy(
-                self.labels_data['obj_' + str(other_obj_idx).zfill(6)]['depth_imgs'][other_data_idx])
+                self.labels_frame['obj_' + str(other_obj_idx).zfill(6)]['depth_imgs'][other_data_idx])
             depth = self.distractor(depth, depth2)
 
         depth = depth.unsqueeze(0).float()
