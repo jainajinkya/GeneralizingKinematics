@@ -92,11 +92,12 @@ class MixtureDataset(Dataset):
         # load depth
         # path = os.path.join(self.root_dir, 'depth' + str(idx).zfill(6) + '.pt')
         # depth = torch.load(path)
-        if self.labels_frame is None:
-            self.labels_frame = h5py.File(os.path.join(self.root_dir, 'complete_data.hdf5'), 'r')
+        # if self.labels_frame is None:
+        #     self.labels_frame = h5py.File(os.path.join(self.root_dir, 'complete_data.hdf5'), 'r')
 
         obj_idx, obj_data_idx = self.idx_to_h5py_dataset_idx(idx)
-        depth = torch.from_numpy(self.labels_frame['obj_' + str(obj_idx).zfill(6)]['depth_imgs'][obj_data_idx])
+        with h5py.File(os.path.join(self.root_dir, 'complete_data.hdf5'), 'r') as h5File:
+            depth = torch.from_numpy(h5File['obj_' + str(obj_idx).zfill(6)]['depth_imgs'][obj_data_idx])
 
         # random other depth image
         if np.random.rand() < self.distractor_prob:
@@ -104,8 +105,8 @@ class MixtureDataset(Dataset):
             # path2 = os.path.join(self.root_dir, 'depth' + str(other_idx).zfill(6) + '.pt')
             # depth2 = torch.load(path2)
             other_obj_idx, other_data_idx = self.idx_to_h5py_dataset_idx(other_idx)
-            depth2 = torch.from_numpy(
-                self.labels_frame['obj_' + str(other_obj_idx).zfill(6)]['depth_imgs'][other_data_idx])
+            with h5py.File(os.path.join(self.root_dir, 'complete_data.hdf5'), 'r') as h5File:
+                depth2 = torch.from_numpy(h5File['obj_' + str(other_obj_idx).zfill(6)]['depth_imgs'][other_data_idx])
             depth = self.distractor(depth, depth2)
 
         depth = depth.unsqueeze(0).float()
@@ -180,16 +181,16 @@ class MixtureDataset(Dataset):
                 self.normalize_dim(self.raw_labels, self.bounds, d)
 
     def get_raw_labels(self):
-        if self.labels_frame is None:
-            self.labels_frame = h5py.File(os.path.join(self.root_dir, 'complete_data.hdf5'), 'r')
-
+        # if self.labels_frame is None:
         raw_labels = []
-        for obj in self.labels_frame.values():
-            embeds = np.array(obj['embedding_and_params'])
-            q_vals = np.array(obj['q'])
-            for q in q_vals:
-                row = np.concatenate((embeds, q))
-                raw_labels.append(row)
+
+        with h5py.File(os.path.join(self.root_dir, 'complete_data.hdf5'), 'r') as h5File:
+            for obj in h5File.values():
+                embeds = np.array(obj['embedding_and_params'])
+                q_vals = np.array(obj['q'])
+                for q in q_vals:
+                    row = np.concatenate((embeds, q))
+                    raw_labels.append(row)
         return np.array(raw_labels)
 
     def idx_to_h5py_dataset_idx(self, idx, imgs_per_obj=16):
