@@ -32,6 +32,9 @@ parser.add_argument('--ndof', type=int, default=1, help='how many degrees of fre
 parser.add_argument('--obj', type=str, default='microwave')
 parser.add_argument('--drop', type=float, default=0.8, help='dropout prob')
 parser.add_argument('--device', type=int, default=0, help='cuda device')
+parser.add_argument('--load-wts', action='store_true', default=False, help='Should load model wts from prior run?')
+parser.add_argument('--wts-dir', type=str, default='models/', help='Dir of saved model wts')
+parser.add_argument('--prior-wts', type=str, default='test', help='Name of saved model wts')
 args = parser.parse_args()
 
 print(args)
@@ -90,6 +93,10 @@ trainloader = torch.utils.data.DataLoader(trainset, batch_size=args.batch,
 network = KinematicMDNv3(n_gaussians=args.n_gaussians,
                          out_features=trainset.labels.shape[1],
                          p=args.drop)
+
+# Load Saved wts
+if args.load_wts:
+    network.load_state_dict(torch.load(args.wts_dir + args.prior_wts + '.net'))
 
 # setup trainer
 if torch.cuda.is_available():

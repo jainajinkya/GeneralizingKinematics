@@ -6,3 +6,4 @@ models/
 plots/
 *.npy
 __pycache__/
+.idea/
