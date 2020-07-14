@@ -8,6 +8,9 @@ from torch.utils.data import Dataset
 
 
 # %%
+from magic.mixture.utils import change_frames
+
+
 class MixtureDataset(Dataset):
     def __init__(self,
                  ntrain,
@@ -187,6 +190,12 @@ class MixtureDataset(Dataset):
         with h5py.File(os.path.join(self.root_dir, 'complete_data.hdf5'), 'r') as h5File:
             for obj in h5File.values():
                 embeds = np.array(obj['embedding_and_params'])
+                ##### Changing axis to local coordinates #####
+                axis_in_world = embeds[5:12]
+                obj_pose_in_world = embeds[-7:]
+                axis_in_obj = change_frames(obj_pose_in_world, axis_in_world)
+                embeds[5:12] = axis_in_obj
+                #############################################
                 q_vals = np.array(obj['q'])
                 for q in q_vals:
                     row = np.concatenate((embeds, q))

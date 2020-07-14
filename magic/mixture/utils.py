@@ -1,7 +1,7 @@
 import copy
 import torch
 import numpy as np
-
+import transforms3d as tf3d
 
 def norm_quat(x):
     # input shape is (-1, ndof, 4)
@@ -135,3 +135,20 @@ def q_to_idx(q):
                                           -1.35785810966701,
                                           -1.457858109667]) - q)
     return torch.argmin(differences)
+
+
+def change_frames(frame_B_wrt_A, pose_wrt_A):
+    A_T_pose = tf3d.affines.compose(T=pose_wrt_A[:3],
+                                    R=tf3d.quaternions.quat2mat(pose_wrt_A[3:]),  # quat in  wxyz
+                                    Z=np.ones(3))
+    A_rot_mat_B = tf3d.quaternions.quat2mat(frame_B_wrt_A[3:])
+
+    # Following as described in Craig
+    B_T_A = tf3d.affines.compose(T=-A_rot_mat_B.T.dot(frame_B_wrt_A[:3]),
+                                 R=A_rot_mat_B.T,
+                                 Z=np.ones(3))
+
+    B_T_pose = B_T_A.dot(A_T_pose)
+    trans, rot, scale, _ = tf3d.affines.decompose44(B_T_pose)
+    quat = tf3d.quaternions.mat2quat(rot)
+    return np.concatenate((trans, quat))  # return quat in wxyz
