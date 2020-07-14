@@ -5,10 +5,7 @@ import numpy as np
 import torch
 from GeneralizingKinematics.magic.noise_models import Distractor
 from torch.utils.data import Dataset
-
-
-# %%
-from magic.mixture.utils import change_frames
+from GeneralizingKinematics.magic.mixture.utils import change_frames
 
 
 class MixtureDataset(Dataset):
