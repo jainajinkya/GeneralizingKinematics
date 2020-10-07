@@ -81,7 +81,7 @@ def gaussian_probability(sigma, mu, data):
     # print('data shape in gaussian_probability', data.shape)
     data = data.unsqueeze(1).expand_as(sigma)
     ret = (ONEOVERSQRT2PI / sigma) * torch.exp(-0.5 * ( (data - mu) / sigma)**2 )
-    return torch.prod(ret,2)
+    return torch.clamp(torch.prod(ret,2), 0., 1.)
 
 
 def mdn_loss(pi, sigma, mu, target):
